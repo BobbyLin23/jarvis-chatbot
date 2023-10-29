@@ -1,0 +1,4 @@
+# Jarvis Chatbot
+
+- Nuxt
+- TypeScript
