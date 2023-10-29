@@ -2,3 +2,5 @@
 
 - Nuxt
 - TypeScript
+- Nuxt UI
+- Tailwind CSS
