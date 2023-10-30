@@ -9,7 +9,14 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: []
+      exclude: ['/register']
     }
-  }
+  },
+  components: [
+    {
+      path: '~/components/layout',
+      pathPrefix: false
+    },
+    '~/components'
+  ]
 })

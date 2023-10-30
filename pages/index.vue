@@ -1,5 +1,7 @@
 <script setup lang='ts'></script>
 
 <template>
-  <div>Index</div>
+  <div class="p-6">
+    <UserButton />
+  </div>
 </template>

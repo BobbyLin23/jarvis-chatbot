@@ -3,47 +3,27 @@ import { z } from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 
 const supabase = useSupabaseClient()
+
 const toast = useToast()
 
 const schema = z.object({
   email: z.string().email('Invalid email'),
-  password: z.string().min(6, {
-    message: 'Password must be at least 6 characters'
-  })
+  password: z.string().min(6, 'Must be at least 6 characters'),
+  confirmPassword: z.string().min(6, 'Must be at least 6 characters')
+}).refine(data => data.password === data.confirmPassword, {
+  message: 'Passwords do not match',
+  path: ['confirmPassword']
 })
 
 type Schema = z.output<typeof schema>
 
 const state = ref({
   email: undefined,
-  password: undefined
+  password: undefined,
+  confirmPassword: undefined
 })
 
 const loading = ref(false)
-
-const signInWithGithub = async () => {
-  try {
-    loading.value = true
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: 'http://localhost:3000/confirm'
-      }
-    })
-    if (error) {
-      toast.add({
-        title: error.name,
-        description: error.message,
-        color: 'red',
-        icon: 'i-heroicons-exclamation-circle'
-      })
-    }
-  } catch (e) {
-    console.log(e)
-  } finally {
-    loading.value = false
-  }
-}
 
 const signInWithGoogle = async () => {
   try {
@@ -69,10 +49,34 @@ const signInWithGoogle = async () => {
   }
 }
 
+const signInWithGithub = async () => {
+  try {
+    loading.value = true
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: 'http://localhost:3000/confirm'
+      }
+    })
+    if (error) {
+      toast.add({
+        title: error.name,
+        description: error.message,
+        color: 'red',
+        icon: 'i-heroicons-exclamation-circle'
+      })
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    loading.value = false
+  }
+}
+
 async function submit (event: FormSubmitEvent<Schema>) {
   try {
     loading.value = true
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signUp({
       email: event.data.email,
       password: event.data.password
     })
@@ -84,15 +88,13 @@ async function submit (event: FormSubmitEvent<Schema>) {
         icon: 'i-heroicons-exclamation-circle'
       })
     } else {
-      state.value.email = undefined
-      state.value.password = undefined
-      navigateTo('/confirm')
       toast.add({
         title: 'Success',
-        description: 'Login Successfully!',
+        description: 'User created successfully',
         color: 'green',
         icon: 'i-heroicons-check-circle'
       })
+      navigateTo('/login')
     }
   } catch (e) {
     console.error(e)
@@ -103,17 +105,17 @@ async function submit (event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div class="p-6 flex flex-col rounded-lg gap-y-4 dark:bg-neutral-800 shadow-sm w-[360px]">
+  <div class="p-6 flex flex-col rounded-lg space-y-4 dark:bg-neutral-800 shadow-sm w-[360px]">
     <div class="flex items-center gap-x-4">
       <div class="px-2 pt-1 bg-sky-500/10 rounded-md">
         <UIcon name="i-heroicons-chat-bubble-bottom-center-text" class="text-sky-500" />
       </div>
       <h1 class="text-xl font-bold">
-        Jarvis Chat Bot
+        Jarvis ChatBot
       </h1>
     </div>
     <p class="text-neutral-500 text-sm">
-      Sign in to Jarvis Chat Bot
+      Sign up to Jarvis Chat Bot
     </p>
     <div class="flex gap-x-2">
       <UButton
@@ -145,21 +147,21 @@ async function submit (event: FormSubmitEvent<Schema>) {
       @submit="submit"
     >
       <UFormGroup label="Email" name="email">
-        <UInput v-model="state.email" />
+        <UInput v-model="state.email" class="bg-transparent" />
       </UFormGroup>
       <UFormGroup label="Password" name="password">
-        <UInput v-model="state.password" />
+        <UInput v-model="state.password" type="password" />
+      </UFormGroup>
+      <UFormGroup label="Confirm Password" name="confirmPassword">
+        <UInput v-model="state.confirmPassword" type="password" />
       </UFormGroup>
       <UButton type="submit" block :loading="loading">
-        Sign In
+        Sign Up
       </UButton>
     </UForm>
-    <div class="underline text-neutral-500 text-center cursor-pointer space-y-2 text-sm">
-      <div class="hover:text-neutral-400">
-        Forget your password
-      </div>
-      <NuxtLink class="hover:text-neutral-400 block" to="/register">
-        Don&apos;t have an account? Sign up
+    <div class="underline text-neutral-500 text-center cursor-pointer text-sm">
+      <NuxtLink to="/login" class="hover:text-neutral-400">
+        Already have an account? Sign in
       </NuxtLink>
     </div>
   </div>

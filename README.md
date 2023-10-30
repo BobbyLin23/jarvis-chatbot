@@ -4,3 +4,4 @@
 - TypeScript
 - Nuxt UI
 - Tailwind CSS
+- Supabase
