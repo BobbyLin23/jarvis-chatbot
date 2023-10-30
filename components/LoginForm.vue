@@ -20,6 +20,27 @@ const state = ref({
 
 const loading = ref(false)
 
+const signInWithGithub = async () => {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: 'http://localhost:3000/confirm'
+      }
+    })
+    if (error) {
+      toast.add({
+        title: error.name,
+        description: error.message,
+        color: 'red',
+        icon: 'i-heroicons-exclamation-circle'
+      })
+    }
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 async function submit (event: FormSubmitEvent<Schema>) {
   try {
     loading.value = true
@@ -74,6 +95,7 @@ async function submit (event: FormSubmitEvent<Schema>) {
         variant="solid"
         class="flex-1 flex justify-center"
         :disabled="loading"
+        @click="signInWithGithub"
       >
         <GithubIcon class="w-6 h-6" />
       </UButton>
