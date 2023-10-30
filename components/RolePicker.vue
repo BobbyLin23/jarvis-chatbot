@@ -1,9 +1,16 @@
 <script setup lang="ts">
-const isOpen = ref(false)
+defineProps<{
+  isOpen: boolean
+}>()
+
+defineEmits(['close'])
+
+const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
+const selected = ref(people[0])
 </script>
 
 <template>
-  <UModal v-model="isOpen" prevent-close>
+  <UModal :model-value="isOpen" prevent-close>
     <UCard
       :ui="{
         ring: '',
@@ -12,19 +19,27 @@ const isOpen = ref(false)
     >
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-            Modal
+          <h3
+            class="text-base font-semibold leading-6
+          text-gray-900 dark:text-white"
+          >
+            Select the role
           </h3>
           <UButton
             color="gray"
             variant="ghost"
             icon="i-heroicons-x-mark-20-solid"
             class="-my-1"
-            @click="isOpen = false"
+            @click="$emit('close')"
           />
         </div>
       </template>
-      <div class="h-32" />
+      <div>
+        <USelectMenu
+          v-model="selected"
+          :options="people"
+        />
+      </div>
     </UCard>
   </UModal>
 </template>
