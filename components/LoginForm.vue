@@ -103,7 +103,7 @@ async function submit (event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div class="p-6 flex flex-col rounded-lg gap-y-4 dark:bg-neutral-800 shadow-sm w-[360px]">
+  <div class="p-6 flex flex-col rounded-lg gap-y-4 bg-neutral-100 dark:bg-neutral-800 shadow-sm w-[360px]">
     <div class="flex items-center gap-x-4">
       <div class="px-2 pt-1 bg-sky-500/10 rounded-md">
         <UIcon name="i-heroicons-chat-bubble-bottom-center-text" class="text-sky-500" />
@@ -137,7 +137,7 @@ async function submit (event: FormSubmitEvent<Schema>) {
         <GithubIcon class="w-6 h-6" />
       </UButton>
     </div>
-    <div class="border-b border-neutral-700" />
+    <div class="border-b border-neutral-300 dark:border-neutral-700" />
     <UForm
       :schema="schema"
       :state="state"

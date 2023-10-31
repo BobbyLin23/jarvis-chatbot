@@ -18,5 +18,8 @@ export default defineNuxtConfig({
       pathPrefix: false
     },
     '~/components'
-  ]
+  ],
+  runtimeConfig: {
+    openaiApiKey: process.env.OPENAI_API_KEY
+  }
 })

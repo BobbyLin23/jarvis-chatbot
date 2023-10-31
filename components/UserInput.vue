@@ -1,14 +1,36 @@
 <script setup lang='ts'>
-const value = ref('')
+const toast = useToast()
+
+const prompt = ref('')
+
+const loading = ref(false)
+
+const handleSubmit = () => {
+  if (!prompt.value) {
+    toast.add({
+      title: 'Prompt is required',
+      color: 'red',
+      icon: 'i-heroicons-exclamation-circle'
+    })
+  }
+}
 </script>
 
 <template>
   <div class="flex items-center gap-x-2">
     <UInput
-      v-model="value"
-      class="flex-1"
-      placeholder="Please Input ..."
+      v-model="prompt"
+      class="border-0 outline-none focus-visible:ring-0
+      focus-visible:ring-transparent flex-1"
+      :disabled="loading"
+      placeholder="Please input..."
     />
-    <UButton label="Generate" />
+    <UButton
+      type="submit"
+      label="Generate"
+      :disabled="loading"
+      color="gray"
+      @click="handleSubmit"
+    />
   </div>
 </template>

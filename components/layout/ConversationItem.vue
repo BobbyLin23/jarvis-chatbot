@@ -2,7 +2,7 @@
 
 <template>
   <div
-    class="w-full rounded-lg flex items-center my-2 text-neutral-400
+    class="w-full rounded-lg flex items-center my-2 text-neutral-800 dark:text-neutral-400
     group cursor-pointer hover:bg-neutral-500 p-2 justify-between"
   >
     <div class="flex items-center gap-x-2">
