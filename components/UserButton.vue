@@ -35,7 +35,7 @@ const items = [
     :popper="{ placement: 'bottom-start' }"
   >
     <UAvatar
-      src="https://avatars.githubusercontent.com/u/739984?v=4"
+      :src="user?.user_metadata?.avatar_url"
       alt="Avatar"
     />
     <template #account="{ item }">

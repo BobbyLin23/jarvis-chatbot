@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
       return createError({ statusCode: 400, statusMessage: 'Bad Request' })
     }
 
-    const response: ChatCompletion = await $fetch('https://api.openai-sb.com/v1/chat/conversation', {
+    const response = await $fetch<ChatCompletion>('https://api.openai-sb.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${config.openaiApiKey}`,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const models = ['gpt3.5-turbo', 'gpt-4']
+const models = ['gpt-3.5-turbo', 'gpt-4']
 const selected = ref(models[0])
 
 const showRolePicker = useShowRolePicker()

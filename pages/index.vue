@@ -9,6 +9,8 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
+const toast = useToast()
+
 const form = ref({
   prompt: undefined
 })
@@ -33,10 +35,15 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         messages: newMessage
       }
     })
+    console.log(response)
     messages.value = newMessage.concat(response.data.value!)
     form.value.prompt = undefined
   } catch (e) {
-    console.log(e)
+    toast.add({
+      icon: 'i-heroicons-exclamation-20-solid',
+      title: 'Something went wrong',
+      description: (e as Error).message
+    })
   } finally {
     loading.value = false
   }
@@ -81,6 +88,20 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
       </div>
       <div v-if="messages.length === 0 && !loading">
         <EmptyState label="No Conversations" />
+      </div>
+      <div class="flex flex-col-reverse gap-y-4">
+        <div
+          v-for="(message, index) in messages"
+          :key="index"
+          class="p-8 w-full flex items-start gap-x-8 rounded-lg"
+          :class="[message && message.role === 'user' ? 'bg-white border border-black/10 dark:bg-neutral-600' : 'bg-neutral-100 dark:bg-neutral-800']"
+        >
+          <UserAvatar v-if="message && message.role === 'user'" />
+          <BotAvatar v-else />
+          <p class="text-sm">
+            {{ message?.content }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
