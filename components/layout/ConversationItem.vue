@@ -5,13 +5,17 @@ const props = defineProps<{
   item: Conversation
 }>()
 
-const emits = defineEmits(['update'])
+const emits = defineEmits(['update:delete', 'update:edit', 'update:pinned'])
 
 const supabase = useSupabaseClient<Database>()
 
 const route = useRoute()
 
 const toast = useToast()
+
+const isEditing = ref(false)
+
+const title = computed(() => props.item.title || '')
 
 const handleDelete = async () => {
   try {
@@ -24,7 +28,7 @@ const handleDelete = async () => {
         icon: 'i-heroicons-exclamation-circle'
       })
     } else {
-      emits('update')
+      emits('update:delete')
       toast.add({
         title: 'Success',
         description: 'Conversation deleted',
@@ -34,6 +38,30 @@ const handleDelete = async () => {
     }
   } catch (e) {
     console.log(e)
+  }
+}
+
+const handleEdit = async () => {
+  if (title.value) {
+    const { error } = await supabase.from('conversation')
+      .update({ title: title.value }).eq('id', props.item.id)
+    if (error) {
+      toast.add({
+        title: error.hint,
+        description: error.message,
+        color: 'red',
+        icon: 'i-heroicons-exclamation-circle'
+      })
+    } else {
+      toast.add({
+        title: 'Success',
+        description: 'Conversation updated',
+        color: 'green',
+        icon: 'i-heroicons-check-circle'
+      })
+      isEditing.value = false
+      emits('update:edit')
+    }
   }
 }
 </script>
@@ -50,16 +78,33 @@ const handleDelete = async () => {
         class="group-hover:text-neutral-100"
         name="i-heroicons-chat-bubble-bottom-center-text-20-solid"
       />
-      <p class="group-hover:text-neutral-100">
+      <UTooltip
+        v-if="!isEditing && item.title?.length! >= 15"
+        :text="item.title!"
+      >
+        <p class="group-hover:text-neutral-100 truncate w-32">
+          {{ item.title }}
+        </p>
+      </UTooltip>
+      <p
+        v-if="!isEditing && item.title?.length! < 15"
+        class="group-hover:text-neutral-100 truncate w-32"
+      >
         {{ item.title }}
       </p>
+      <UInput
+        v-if="isEditing"
+        v-model="title"
+        class="w-32"
+        @keyup.enter="handleEdit"
+      />
     </div>
     <div :class="tw('items-center gap-x-2 hidden group-hover:flex', route.params.conversationId === item.id ? 'flex' : 'hidden')">
       <UTooltip text="Pin">
         <PushPinIcon class="hover:text-neutral-100" />
       </UTooltip>
       <UTooltip text="Edit">
-        <UIcon class="hover:text-neutral-100" name="i-heroicons-pencil-square" />
+        <UIcon class="hover:text-neutral-100" name="i-heroicons-pencil-square" @click="isEditing = !isEditing" />
       </UTooltip>
       <UTooltip text="Trash">
         <UIcon class="hover:text-neutral-100" name="i-heroicons-trash" @click="handleDelete" />

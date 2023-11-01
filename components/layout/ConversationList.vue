@@ -5,9 +5,15 @@ defineProps<{
   list: Conversation[]
 }>()
 
-defineEmits(['update'])
+defineEmits(['update:delete', 'update:edit'])
 </script>
 
 <template>
-  <ConversationItem v-for="i in list" :key="i.id" :item="i" @update="$emit('update')" />
+  <ConversationItem
+    v-for="i in list"
+    :key="i.id"
+    :item="i"
+    @update:delete="$emit('update:delete')"
+    @update:edit="$emit('update:edit')"
+  />
 </template>

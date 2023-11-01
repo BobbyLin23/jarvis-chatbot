@@ -15,13 +15,22 @@ const showRolePicker = useShowRolePicker()
 
 const conversationList = ref<Conversation[]>([])
 
+const refreshConversationList = () => {
+  if (conversationList.value.length === 0) {
+    navigateTo('/')
+  } else {
+    navigateTo(conversationList.value[conversationList.value.length - 1].id)
+  }
+}
+
 const fetchConversationList = async () => {
   try {
     if (!user.value?.id) {
       return
     }
 
-    const { data, error: selectError } = await supabase.from('conversation').select('*').eq('user_id', user.value.id)
+    const { data, error: selectError } = await supabase.from('conversation')
+      .select('*').eq('user_id', user.value.id)
     if (selectError) {
       toast.add({
         title: selectError.hint,
@@ -33,12 +42,6 @@ const fetchConversationList = async () => {
 
     if (data) {
       conversationList.value = data
-    }
-
-    if (conversationList.value.length === 0) {
-      navigateTo('/')
-    } else {
-      navigateTo(conversationList.value[conversationList.value.length - 1].id)
     }
   } catch (e) {
     console.log(e)
@@ -70,6 +73,15 @@ const handleCreateConversation = async () => {
   }
 }
 
+const handleUpdateDelete = async () => {
+  await fetchConversationList()
+  refreshConversationList()
+}
+
+const handleUpdateEdit = () => {
+  fetchConversationList()
+}
+
 onMounted(() => {
   fetchConversationList()
 })
@@ -92,7 +104,11 @@ onMounted(() => {
       </div>
     </div>
     <div class="my-4 flex-1 p-2">
-      <ConversationList :list="conversationList" @update="fetchConversationList" />
+      <ConversationList
+        :list="conversationList"
+        @update:delete="handleUpdateDelete"
+        @update:edit="handleUpdateEdit"
+      />
     </div>
     <div class="my-4 px-2">
       <UButton
