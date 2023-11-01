@@ -5,7 +5,7 @@ const router = useRouter()
 
 const items = [
   [{
-    label: user.value?.email,
+    label: user.value?.email || '',
     slot: 'account',
     disabled: true
   }],
