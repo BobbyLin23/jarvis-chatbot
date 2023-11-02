@@ -15,7 +15,7 @@ const toast = useToast()
 
 const isEditing = ref(false)
 
-const title = computed(() => props.item.title || '')
+const title = ref(props.item.title || '')
 
 const handleDelete = async () => {
   try {
@@ -64,6 +64,12 @@ const handleEdit = async () => {
     }
   }
 }
+
+watch(() => props.item.title, () => {
+  if (props.item.title) {
+    title.value = props.item.title
+  }
+})
 </script>
 
 <template>
