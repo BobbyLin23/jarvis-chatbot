@@ -5,6 +5,8 @@ import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 const supabase = useSupabaseClient()
 const toast = useToast()
 
+const config = useRuntimeConfig()
+
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(6, {
@@ -27,7 +29,7 @@ const signInWithGithub = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: 'http://localhost:3000/confirm'
+        redirectTo: config.public.redirectUrl
       }
     })
     if (error) {
@@ -51,7 +53,7 @@ const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'http://localhost:3000/confirm'
+        redirectTo: config.public.redirectUrl
       }
     })
     if (error) {

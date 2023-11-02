@@ -20,6 +20,9 @@ export default defineNuxtConfig({
     '~/components'
   ],
   runtimeConfig: {
-    openaiApiKey: process.env.OPENAI_API_KEY
+    openaiApiKey: process.env.OPENAI_API_KEY,
+    public: {
+      redirectUrl: process.env.NUXT_PUBLIC_REDIRECT_URL
+    }
   }
 })
