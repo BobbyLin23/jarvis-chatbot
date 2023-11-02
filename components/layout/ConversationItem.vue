@@ -74,7 +74,7 @@ watch(() => props.item.title, () => {
 
 <template>
   <div
-    :class="tw(route.path === '/' + item.id ? 'bg-neutral-500' : '',
+    :class="tw(route.path === '/' + item.id ? 'bg-neutral-400 dark:bg-neutral-500' : '',
                `w-full rounded-lg flex items-center my-2 text-neutral-800 dark:text-neutral-400
               group cursor-pointer hover:bg-neutral-500 p-2 justify-between`)"
     @click="$router.push(`/${item.id}`)"

@@ -5,8 +5,6 @@ import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 const supabase = useSupabaseClient()
 const toast = useToast()
 
-const config = useRuntimeConfig()
-
 const schema = z.object({
   email: z.string().email('Invalid email'),
   password: z.string().min(6, {
@@ -27,10 +25,7 @@ const signInWithGithub = async () => {
   try {
     loading.value = true
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: config.public.redirectUrl
-      }
+      provider: 'github'
     })
     if (error) {
       toast.add({
@@ -39,6 +34,14 @@ const signInWithGithub = async () => {
         color: 'red',
         icon: 'i-heroicons-exclamation-circle'
       })
+    } else {
+      toast.add({
+        title: 'Success',
+        description: 'Login Successfully!',
+        color: 'green',
+        icon: 'i-heroicons-check-circle'
+      })
+      navigateTo('/confirm')
     }
   } catch (e) {
     console.log(e)
@@ -51,10 +54,7 @@ const signInWithGoogle = async () => {
   try {
     loading.value = true
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: config.public.redirectUrl
-      }
+      provider: 'google'
     })
     if (error) {
       toast.add({
@@ -63,6 +63,14 @@ const signInWithGoogle = async () => {
         color: 'red',
         icon: 'i-heroicons-exclamation-circle'
       })
+    } else {
+      toast.add({
+        title: 'Success',
+        description: 'Login Successfully!',
+        color: 'green',
+        icon: 'i-heroicons-check-circle'
+      })
+      navigateTo('/confirm')
     }
   } catch (e) {
     console.log(e)
