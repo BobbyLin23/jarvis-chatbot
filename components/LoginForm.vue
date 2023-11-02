@@ -150,7 +150,7 @@ async function submit (event: FormSubmitEvent<Schema>) {
         <UInput v-model="state.email" />
       </UFormGroup>
       <UFormGroup label="Password" name="password">
-        <UInput v-model="state.password" />
+        <UInput v-model="state.password" type="password" />
       </UFormGroup>
       <UButton type="submit" block :loading="loading">
         Sign In

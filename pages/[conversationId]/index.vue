@@ -4,6 +4,8 @@ import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 import { z } from 'zod'
 import type { Database } from '~/types/supabase'
 
+const route = useRoute()
+
 const supabase = useSupabaseClient<Database>()
 
 const schema = z.object({
@@ -33,7 +35,8 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
     ]
     await supabase.from('content').insert({
       content: event.data.prompt,
-      role: 'user'
+      role: 'user',
+      conversation_id: route.params.conversationId
     })
     const newMessage = messages.value.concat(userMessage)
     const response = await useFetch<ChatCompletionMessage>('/api/conversation', {
