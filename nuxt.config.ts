@@ -22,12 +22,16 @@ export default defineNuxtConfig({
   runtimeConfig: {
     openaiApiKey: process.env.OPENAI_API_KEY,
     public: {
-      redirectUrl: process.env.NUXT_PUBLIC_REDIRECT_URL
+      baseUrl: process.env.BASE_URL || 'http://localhost:3000'
     }
   },
   app: {
     pageTransition: {
       name: 'page',
+      mode: 'out-in'
+    },
+    layoutTransition: {
+      name: 'layout',
       mode: 'out-in'
     }
   }

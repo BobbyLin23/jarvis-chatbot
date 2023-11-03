@@ -2,11 +2,6 @@
 import type { ChatCompletionMessage } from 'openai/resources/chat'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 import { z } from 'zod'
-import type { Database } from '~/types/supabase'
-
-const route = useRoute()
-
-const supabase = useSupabaseClient<Database>()
 
 const schema = z.object({
   prompt: z.string().min(1, 'Must be at least 1 character')

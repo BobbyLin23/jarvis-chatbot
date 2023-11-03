@@ -26,10 +26,10 @@ const loading = ref(false)
 const signInWithGithub = async () => {
   try {
     loading.value = true
-    const { error, data } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: config.public.redirectUrl
+        redirectTo: `${config.public.baseUrl}/confirm`
       }
     })
     if (error) {
@@ -40,7 +40,6 @@ const signInWithGithub = async () => {
         icon: 'i-heroicons-exclamation-circle'
       })
     }
-    console.log(data)
   } catch (e) {
     console.log(e)
   } finally {
@@ -54,7 +53,7 @@ const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: config.public.redirectUrl
+        redirectTo: `${config.public.baseUrl}/confirm`
       }
     })
     if (error) {
@@ -63,13 +62,6 @@ const signInWithGoogle = async () => {
         description: error.message,
         color: 'red',
         icon: 'i-heroicons-exclamation-circle'
-      })
-    } else {
-      toast.add({
-        title: 'Success',
-        description: 'Login Successfully!',
-        color: 'green',
-        icon: 'i-heroicons-check-circle'
       })
     }
   } catch (e) {

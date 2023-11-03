@@ -2,6 +2,8 @@
 import { z } from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 
+const config = useRuntimeConfig()
+
 const supabase = useSupabaseClient()
 
 const toast = useToast()
@@ -29,7 +31,10 @@ const signInWithGoogle = async () => {
   try {
     loading.value = true
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google'
+      provider: 'google',
+      options: {
+        redirectTo: `${config.public.baseUrl}/confirm`
+      }
     })
     if (error) {
       toast.add({
@@ -45,7 +50,6 @@ const signInWithGoogle = async () => {
         color: 'green',
         icon: 'i-heroicons-check-circle'
       })
-      navigateTo('/confirm')
     }
   } catch (e) {
     console.log(e)
@@ -58,7 +62,10 @@ const signInWithGithub = async () => {
   try {
     loading.value = true
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github'
+      provider: 'github',
+      options: {
+        redirectTo: `${config.public.baseUrl}/confirm`
+      }
     })
     if (error) {
       toast.add({
@@ -74,7 +81,6 @@ const signInWithGithub = async () => {
         color: 'green',
         icon: 'i-heroicons-check-circle'
       })
-      navigateTo('/confirm')
     }
   } catch (e) {
     console.log(e)
