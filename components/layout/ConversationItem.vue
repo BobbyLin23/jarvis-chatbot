@@ -110,7 +110,11 @@ watch(() => props.item.title, () => {
         <PushPinIcon class="hover:text-neutral-100" />
       </UTooltip>
       <UTooltip text="Edit">
-        <UIcon class="hover:text-neutral-100" name="i-heroicons-pencil-square" @click="isEditing = !isEditing" />
+        <UIcon
+          class="hover:text-neutral-100"
+          name="i-heroicons-pencil-square"
+          @click.prevent="isEditing = !isEditing"
+        />
       </UTooltip>
       <UTooltip text="Trash">
         <UIcon class="hover:text-neutral-100" name="i-heroicons-trash" @click="handleDelete" />

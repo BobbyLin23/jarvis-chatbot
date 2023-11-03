@@ -88,7 +88,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <aside class="h-full w-64 flex flex-col fixed bg-zinc-100 dark:bg-zinc-700">
+  <aside class="h-full w-64 flex flex-col fixed bg-zinc-100 dark:bg-cool-700">
     <div class="flex items-center justify-between p-4">
       <h1 class="text-xl font-bold">
         Jarvis Chat

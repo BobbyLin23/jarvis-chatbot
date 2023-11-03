@@ -24,5 +24,11 @@ export default defineNuxtConfig({
     public: {
       redirectUrl: process.env.NUXT_PUBLIC_REDIRECT_URL
     }
+  },
+  app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in'
+    }
   }
 })

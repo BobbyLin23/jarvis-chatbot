@@ -6,7 +6,7 @@ const currentRole = useCurrentRole()
 <template>
   <nav
     class="border-b h-20 flex w-full items-center justify-between
-  dark:border-neutral-700 px-6"
+    dark:border-neutral-700 px-6 dark:bg-neutral-800"
   >
     <UButton
       variant="link"

@@ -28,7 +28,8 @@ export default defineEventHandler(async (event) => {
         model: 'gpt-3.5-turbo',
         stream: false,
         messages
-      })
+      }),
+      timeout: 10000
     })
 
     return response.choices[0].message

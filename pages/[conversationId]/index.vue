@@ -33,11 +33,11 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         content: event.data.prompt
       }
     ]
-    await supabase.from('content').insert({
-      content: event.data.prompt,
-      role: 'user',
-      conversation_id: route.params.conversationId
-    })
+    // await supabase.from('content').insert({
+    //   content: event.data.prompt,
+    //   role: 'user',
+    //   conversation_id: route.params.conversationId
+    // })
     const newMessage = messages.value.concat(userMessage)
     const response = await useFetch<ChatCompletionMessage>('/api/conversation', {
       method: 'POST',
@@ -45,7 +45,6 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         messages: newMessage
       }
     })
-    console.log(response)
     messages.value = newMessage.concat(response.data.value!)
     form.value.prompt = undefined
   } catch (e) {
@@ -65,7 +64,7 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
     <UForm
       :schema="schema"
       :state="form"
-      class="w-full focus-within:shadow-sm grid grid-cols-12 gap-2"
+      class="w-full focus-within:shadow-sm grid grid-cols-12 gap-4"
       @submit="handleSubmit"
     >
       <UFormGroup
@@ -104,7 +103,7 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
           v-for="(message, index) in messages"
           :key="index"
           class="p-8 w-full flex items-start gap-x-8 rounded-lg"
-          :class="[message && message.role === 'user' ? 'bg-white border border-black/10 dark:bg-neutral-600' : 'bg-neutral-100 dark:bg-neutral-800']"
+          :class="[message && message.role === 'user' ? 'bg-white border border-black/10 dark:bg-neutral-600' : 'bg-neutral-100 dark:bg-zinc-700']"
         >
           <UserAvatar v-if="message && message.role === 'user'" />
           <BotAvatar v-else />
