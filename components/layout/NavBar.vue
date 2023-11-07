@@ -1,6 +1,30 @@
 <script setup lang="ts">
 const showMobileSidebar = useShowMobileSidebar()
 const currentRole = useCurrentRole()
+
+const supabase = useSupabaseClient()
+
+const route = useRoute()
+
+const title = ref('')
+
+watch(() => route.params.conversationId, async () => {
+  if (route.params.conversationId) {
+    const { data } = await supabase.from('conversation').select('title').eq('id', route.params.conversationId).single()
+    if (data) {
+      title.value = data.title
+    }
+  }
+})
+
+onMounted(async () => {
+  if (route.params.conversationId) {
+    const { data } = await supabase.from('conversation').select('title').eq('id', route.params.conversationId).single()
+    if (data) {
+      title.value = data.title
+    }
+  }
+})
 </script>
 
 <template>
@@ -20,7 +44,7 @@ const currentRole = useCurrentRole()
     <div class="flex items-center gap-x-4">
       <OpenAIIcon class="w-6 h-6" />
       <p class="text-lg">
-        New Chat
+        {{ title }}
       </p>
       <UBadge color="green" variant="soft" size="sm">
         {{ currentRole }}

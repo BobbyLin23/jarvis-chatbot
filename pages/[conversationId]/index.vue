@@ -34,13 +34,22 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
     //   conversation_id: route.params.conversationId
     // })
     const newMessage = messages.value.concat(userMessage)
-    const response = await useFetch<ChatCompletionMessage>('/api/conversation', {
+    const { data, error } = await useAsyncData<ChatCompletionMessage>('conversation', () => $fetch('/api/conversation', {
       method: 'POST',
       body: {
         messages: newMessage
       }
-    })
-    messages.value = newMessage.concat(response.data.value!)
+    }))
+    if (error.value) {
+      toast.add({
+        icon: 'i-heroicons-exclamation-20-solid',
+        title: 'Something went wrong',
+        description: (error.value as Error).message
+      })
+      messages.value = []
+      return
+    }
+    messages.value = newMessage.concat(data.value!)
     form.value.prompt = undefined
   } catch (e) {
     toast.add({
