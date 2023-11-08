@@ -29,8 +29,10 @@ export default defineEventHandler(async (event) => {
         stream: false,
         messages
       }),
-      timeout: 10000
+      timeout: 50000
     })
+
+    console.log(response)
 
     return response.choices[0].message
   } catch (error) {

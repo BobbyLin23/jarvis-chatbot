@@ -79,7 +79,7 @@ const handleUpdateDelete = async () => {
 }
 
 const handleUpdateEdit = () => {
-  fetchConversationList()
+  window.location.reload()
 }
 
 onMounted(() => {
@@ -91,7 +91,7 @@ onMounted(() => {
   <aside class="h-full w-64 flex flex-col fixed bg-zinc-100 dark:bg-cool-700">
     <div class="flex items-center justify-between p-4">
       <h1 class="text-xl font-bold">
-        Jarvis Chat
+        Chat Box
       </h1>
       <div class="space-x-2">
         <UButton

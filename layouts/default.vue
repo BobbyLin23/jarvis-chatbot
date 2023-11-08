@@ -9,7 +9,7 @@ const showMobileSidebar = useShowMobileSidebar()
     </div>
     <div class="sm:ml-64 sm:w-[calc(100vw-256px)] w-full">
       <NavBar />
-      <main class="h-[calc(100vh-80px)] dark:bg-neutral-800">
+      <main class="min-h-[calc(100vh-80px)] dark:bg-neutral-800">
         <slot />
       </main>
     </div>

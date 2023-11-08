@@ -111,11 +111,11 @@ async function submit (event: FormSubmitEvent<Schema>) {
         <UIcon name="i-heroicons-chat-bubble-bottom-center-text" class="text-sky-500" />
       </div>
       <h1 class="text-xl font-bold">
-        Jarvis Chat Bot
+        Chat Box
       </h1>
     </div>
     <p class="text-neutral-500 text-sm">
-      Sign in to Jarvis Chat Bot
+      Sign in to Chat Box
     </p>
     <div class="flex gap-x-2">
       <UButton

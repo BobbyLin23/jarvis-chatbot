@@ -2,6 +2,13 @@
 import type { ChatCompletionMessage } from 'openai/resources/chat'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 import { z } from 'zod'
+import MarkdownIt from 'markdown-it'
+
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true
+})
 
 const schema = z.object({
   prompt: z.string().min(1, 'Must be at least 1 character')
@@ -12,7 +19,7 @@ type Schema = z.output<typeof schema>
 const toast = useToast()
 
 const form = ref({
-  prompt: undefined
+  prompt: ''
 })
 
 const loading = ref(false)
@@ -50,7 +57,7 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
       return
     }
     messages.value = newMessage.concat(data.value!)
-    form.value.prompt = undefined
+    form.value.prompt = ''
   } catch (e) {
     toast.add({
       icon: 'i-heroicons-exclamation-20-solid',
@@ -64,7 +71,7 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
 </script>
 
 <template>
-  <div class="p-6 h-full">
+  <div class="p-6 overflow-y-auto">
     <UForm
       :schema="schema"
       :state="form"
@@ -81,7 +88,19 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
           focus-visible:ring-transparent"
           :disabled="loading"
           placeholder="Please input ..."
-        />
+          :ui="{ icon: { trailing: { pointer: '' } } }"
+        >
+          <template #trailing>
+            <UButton
+              v-show="form.prompt"
+              color="gray"
+              variant="link"
+              icon="i-heroicons-x-mark-20-solid"
+              :padded="false"
+              @click="form.prompt = ''"
+            />
+          </template>
+        </UInput>
       </UFormGroup>
       <UButton
         type="submit"
@@ -91,7 +110,7 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         class="col-span-12 lg:col-span-2 h-8"
       />
     </UForm>
-    <div class="mt-4 space-y-4">
+    <div class="mt-4 space-y-4 w-full">
       <div
         v-if="loading"
         class="p-8 rounded-lg w-full flex items-center
@@ -111,9 +130,7 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         >
           <UserAvatar v-if="message && message.role === 'user'" />
           <BotAvatar v-else />
-          <p class="text-sm">
-            {{ message?.content }}
-          </p>
+          <p class="text-sm w-full" v-html="md.render(message?.content!)" />
         </div>
       </div>
     </div>
