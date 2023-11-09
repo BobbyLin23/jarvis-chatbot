@@ -30,7 +30,7 @@ const fetchConversationList = async () => {
     }
 
     const { data, error: selectError } = await supabase.from('conversation')
-      .select('*').eq('user_id', user.value.id)
+      .select('*').eq('user_id', user.value.id).order('updated_at', { ascending: true })
     if (selectError) {
       toast.add({
         title: selectError.hint,

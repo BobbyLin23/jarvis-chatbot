@@ -32,8 +32,6 @@ export default defineEventHandler(async (event) => {
       timeout: 50000
     })
 
-    console.log(response)
-
     return response.choices[0].message
   } catch (error) {
     throw createError({

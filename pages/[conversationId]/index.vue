@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import type { ChatCompletionMessage } from 'openai/resources/chat'
+import type { ChatCompletionMessage, ChatCompletionRole } from 'openai/resources/chat'
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 import { z } from 'zod'
 import MarkdownIt from 'markdown-it'
+import dayjs from 'dayjs'
+import type { Database } from '~/types/supabase'
 
 const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true
 })
+
+const supabase = useSupabaseClient<Database>()
+
+const route = useRoute()
 
 const schema = z.object({
   prompt: z.string().min(1, 'Must be at least 1 character')
@@ -24,6 +30,8 @@ const form = ref({
 
 const loading = ref(false)
 
+const lastEditTime = ref('')
+
 const messages = ref<ChatCompletionMessage[]>([])
 
 const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
@@ -35,11 +43,6 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         content: event.data.prompt
       }
     ]
-    // await supabase.from('content').insert({
-    //   content: event.data.prompt,
-    //   role: 'user',
-    //   conversation_id: route.params.conversationId
-    // })
     const newMessage = messages.value.concat(userMessage)
     const { data, error } = await useAsyncData<ChatCompletionMessage>('conversation', () => $fetch('/api/conversation', {
       method: 'POST',
@@ -53,9 +56,18 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
         title: 'Something went wrong',
         description: (error.value as Error).message
       })
-      messages.value = []
       return
     }
+    await supabase.from('content').insert({
+      content: event.data.prompt,
+      role: 'user',
+      conversation_id: route.params.conversationId
+    })
+    await supabase.from('content').insert({
+      content: data.value?.content,
+      role: data.value?.role,
+      conversation_id: route.params.conversationId
+    })
     messages.value = newMessage.concat(data.value!)
     form.value.prompt = ''
   } catch (e) {
@@ -68,6 +80,35 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
     loading.value = false
   }
 }
+
+onMounted(async () => {
+  const { data, error } = await supabase.from('content').select('*')
+    .eq('conversation_id', route.params.conversationId).order('created_at', { ascending: true })
+  if (error) {
+    toast.add({
+      icon: 'i-heroicons-exclamation-20-solid',
+      title: error.message,
+      description: error.details
+    })
+    return
+  }
+  if (data) {
+    messages.value = data.map(item => ({
+      content: item.content,
+      role: item.role as ChatCompletionRole
+    }))
+  }
+  const { error: conversationError, data: conversationData } = await supabase.from('conversation').select('updated_at').eq('id', route.params.conversationId)
+  if (conversationError) {
+    toast.add({
+      icon: 'i-heroicons-exclamation-20-solid',
+      title: conversationError.message,
+      description: conversationError.details
+    })
+    return
+  }
+  lastEditTime.value = conversationData[0].updated_at
+})
 </script>
 
 <template>
@@ -132,6 +173,9 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
           <BotAvatar v-else />
           <p class="text-sm w-full" v-html="md.render(message?.content!)" />
         </div>
+      </div>
+      <div v-if="messages.length" class="my-2 text-center text-xs">
+        Last edit at {{ dayjs(lastEditTime).format('YYYY-MM-DD HH:mm:ss') }}
       </div>
     </div>
   </div>
