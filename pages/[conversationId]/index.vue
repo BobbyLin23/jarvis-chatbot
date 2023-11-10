@@ -3,7 +3,6 @@ import type { ChatCompletionMessage, ChatCompletionRole } from 'openai/resources
 import type { FormSubmitEvent } from '@nuxt/ui/dist/runtime/types'
 import { z } from 'zod'
 import MarkdownIt from 'markdown-it'
-import dayjs from 'dayjs'
 import type { Database } from '~/types/supabase'
 
 const md = new MarkdownIt({
@@ -11,6 +10,10 @@ const md = new MarkdownIt({
   linkify: true,
   typographer: true
 })
+
+const dayjs = useDayjs()
+
+const { copy, copied } = useClipboard()
 
 const supabase = useSupabaseClient<Database>()
 
@@ -78,6 +81,17 @@ const handleSubmit = async (event: FormSubmitEvent<Schema>) => {
     })
   } finally {
     loading.value = false
+  }
+}
+
+const handleCopy = async (value: string) => {
+  await copy(value)
+  if (copied) {
+    toast.add({
+      icon: 'i-heroicons-check-circle',
+      title: 'Copied',
+      color: 'green'
+    })
   }
 }
 
@@ -166,12 +180,19 @@ onMounted(async () => {
         <div
           v-for="(message, index) in messages"
           :key="index"
-          class="p-8 w-full flex items-start gap-x-8 rounded-lg"
+          class="p-8 w-full flex items-start gap-x-8 rounded-lg relative group"
           :class="[message && message.role === 'user' ? 'bg-white border border-black/10 dark:bg-neutral-600' : 'bg-neutral-100 dark:bg-zinc-700']"
         >
           <UserAvatar v-if="message && message.role === 'user'" />
           <BotAvatar v-else />
-          <p class="text-sm w-full" v-html="md.render(message?.content!)" />
+          <div class="text-sm w-full" v-html="md.render(message?.content!)" />
+          <UButton
+            icon="i-heroicons-document-duplicate"
+            variant="link"
+            color="gray"
+            class="absolute right-4 top-2 hidden group-hover:block"
+            @click="handleCopy(message?.content!)"
+          />
         </div>
       </div>
       <div v-if="messages.length" class="my-2 text-center text-xs">
